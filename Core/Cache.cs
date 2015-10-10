@@ -6,7 +6,7 @@ using System.Linq;
 namespace Core
 {
 	[Serializable]
-	internal class Cache<TKey, TValue> : IEnumerable<TValue> where TValue : class
+	public class Cache<TKey, TValue> : IEnumerable<TValue> where TValue : class
 	{
 		private readonly object _locker = new object();
 		private readonly IDictionary<TKey, TValue> _values;
