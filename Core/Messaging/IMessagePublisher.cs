@@ -1,4 +1,4 @@
-﻿namespace Core
+﻿namespace Core.Messaging
 {
 	public interface IMessagePublisher
 	{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core
+namespace Core.Messaging
 {
 	public interface IQueueConnector
 	{

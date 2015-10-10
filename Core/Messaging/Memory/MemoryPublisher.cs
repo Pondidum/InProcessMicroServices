@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Core.Memory
+namespace Core.Messaging.Memory
 {
 	public class MemoryPublisher : IMessagePublisher
 	{

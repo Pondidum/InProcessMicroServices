@@ -1,7 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
 
-namespace Core.Rabbit
+namespace Core.Messaging.Rabbit
 {
 	public class RabbitConnector : IQueueConnector
 	{

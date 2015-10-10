@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.Memory
+namespace Core.Messaging.Memory
 {
 	public class MemoryConnector : IQueueConnector
 	{

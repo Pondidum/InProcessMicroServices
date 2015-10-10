@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Core.Memory
+namespace Core.Messaging.Memory
 {
 	public class MemoryListener : IDisposable
 	{

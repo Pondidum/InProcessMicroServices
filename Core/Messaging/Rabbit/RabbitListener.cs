@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Core.Rabbit
+namespace Core.Messaging.Rabbit
 {
 	public class RabbitListener : IDisposable
 	{

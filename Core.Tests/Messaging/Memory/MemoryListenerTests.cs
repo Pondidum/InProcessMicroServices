@@ -1,4 +1,4 @@
-﻿using Core.Memory;
+﻿using Core.Messaging.Memory;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

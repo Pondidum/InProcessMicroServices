@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Memory;
+using Core.Messaging.Memory;
 using Shouldly;
 using Xunit;
 
