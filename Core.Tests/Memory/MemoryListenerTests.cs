@@ -26,7 +26,9 @@ namespace Core.Tests.Memory
 			//nyse.tech.msft taken from:
 			//http://spring.io/blog/2010/06/14/understanding-amqp-the-protocol-used-by-rabbitmq/
 
-			MemoryListener.Matches(pattern, key).ShouldBe(matches);
+			var tree = MemoryListener.CreateExpressionTree(pattern);
+
+			MemoryListener.Matches(tree, key).ShouldBe(matches);
 		}
 	}
 }

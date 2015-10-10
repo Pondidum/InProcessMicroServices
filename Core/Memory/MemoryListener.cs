@@ -26,41 +26,33 @@ namespace Core.Memory
 			_onReceive(message);
 		}
 
-		public static bool Matches(string routingPattern, string messageRoutingKey)
+		public static Segment CreateExpressionTree(string routingPattern)
 		{
-			var parts = routingPattern.Split('.');
-			var s = new Segment(parts.First());
-			var root = s;
-
-			foreach (var source in parts.Skip(1))
-			{
-				s = s.SetChild(new Segment(source));
-			}
-
-			return root.IsMatch(messageRoutingKey.Split('.'));
-
+			return routingPattern.Split('.')
+				.Reverse()
+				.Aggregate((Segment)null, (agg, part) => new Segment(part, agg));
 		}
 
-		private class Segment
+		public static bool Matches(Segment routingTree, string messageRoutingKey)
 		{
-			private string _pattern;
-			private Segment _child;
+			return routingTree.IsMatch(messageRoutingKey.Split('.'));
+		}
 
-			public Segment(string partPattern)
+		public class Segment
+		{
+			private readonly string _pattern;
+			private readonly Segment _child;
+
+			public Segment(string partPattern, Segment child)
 			{
 				_pattern = partPattern;
-			}
-
-			public Segment SetChild(Segment child)
-			{
 				_child = child;
-				return child;
 			}
 
-			public bool IsMatch(IEnumerable<string> parts)
+			public bool IsMatch(string[] parts)
 			{
 				var first = parts.First();
-				var remaining = parts.Skip(1);
+				var remaining = parts.Skip(1).ToArray();
 
 				if (_pattern == "#" && _child == null)
 				{
