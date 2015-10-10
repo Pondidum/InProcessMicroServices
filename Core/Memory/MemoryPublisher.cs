@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Core.Memory
 {
@@ -13,9 +14,13 @@ namespace Core.Memory
 
 		public void Publish(string routingKey, object message)
 		{
+			var json = JsonConvert.SerializeObject(message);
+
 			foreach (var listener in _listeners)
 			{
-				listener.OnMessage(routingKey, message);
+				var instance = JsonConvert.DeserializeObject(json, message.GetType());
+
+				listener.OnMessage(routingKey, instance);
 			}
 		}
 	}

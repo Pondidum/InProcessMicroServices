@@ -39,6 +39,7 @@ namespace Core.Tests.Memory
 				.CreatePublisher(ExchangeName)
 				.Publish("people.create", _message);
 
+			received.ShouldNotBeSameAs(_message);
 			received.ID.ShouldBe(_message.ID);
 			received.Name.ShouldBe(_message.Name);
 		}
@@ -56,11 +57,15 @@ namespace Core.Tests.Memory
 				.CreatePublisher(ExchangeName)
 				.Publish("people.create", _message);
 
+			first.ShouldNotBeSameAs(_message);
 			first.ID.ShouldBe(_message.ID);
 			first.Name.ShouldBe(_message.Name);
 
+			second.ShouldNotBeSameAs(_message);
 			second.ID.ShouldBe(_message.ID);
 			second.Name.ShouldBe(_message.Name);
+
+			first.ShouldNotBeSameAs(second);
 		}
 
 		[Fact]
