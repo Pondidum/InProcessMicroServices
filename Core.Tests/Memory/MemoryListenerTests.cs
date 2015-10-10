@@ -1,23 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Core.Memory;
+﻿using Core.Memory;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace Core.Tests.Memory
 {
 	public class MemoryListenerTests
 	{
-		private readonly ITestOutputHelper _output;
-
-		public MemoryListenerTests(ITestOutputHelper output)
-		{
-			_output = output;
-		}
-
 		[Theory]
 		[InlineData("Some.Matching.Pattern", "Some.Matching.Pattern", true)]
 		[InlineData("Some.Matching.Pattern", "Some.NonMatching.Key", false)]
@@ -32,7 +21,7 @@ namespace Core.Tests.Memory
 		[InlineData("NYSE.*", "NYSE.TECH.MSFT", false)]
 		[InlineData("NYSE.TECH.*", "NYSE.TECH.MSFT", true)]
 		[InlineData("NYSE.*.MSFT", "NYSE.TECH.MSFT", true)]
-		public void TheoryMethodName(string pattern, string key, bool matches)
+		public void When_matching_a_routing_key(string pattern, string key, bool matches)
 		{
 			//nyse.tech.msft taken from:
 			//http://spring.io/blog/2010/06/14/understanding-amqp-the-protocol-used-by-rabbitmq/
