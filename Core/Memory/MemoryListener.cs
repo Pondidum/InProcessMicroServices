@@ -51,16 +51,17 @@ namespace Core.Memory
 
 			public bool IsMatch(string[] parts)
 			{
-				var first = parts.First();
-				var remaining = parts.Skip(1).ToArray();
-
 				if (_pattern == "#" && _child == null)
 				{
 					return true;
 				}
 
+				var first = parts.First();
+
 				if (first == _pattern || (_pattern == "*" && Regex.IsMatch(first, "^.*$")))
 				{
+					var remaining = parts.Skip(1).ToArray();
+
 					if (_child != null && remaining.Any())
 						return _child.IsMatch(remaining);
 
