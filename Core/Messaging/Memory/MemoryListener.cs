@@ -9,21 +9,21 @@ namespace Core.Messaging.Memory
 	{
 		private readonly HashSet<MemoryListener> _memoryListeners;
 		private readonly Segment _routingKey;
-		private readonly Action<object> _onReceive;
+		private readonly Action<string> _onReceive;
 
-		public MemoryListener(HashSet<MemoryListener> memoryListeners, string bindingKey, Action<object> onReceive)
+		public MemoryListener(HashSet<MemoryListener> memoryListeners, string bindingKey, Action<string> onReceive)
 		{
 			_memoryListeners = memoryListeners;
 			_routingKey = CreateExpressionTree(bindingKey);
 			_onReceive = onReceive;
 		}
 
-		public void OnMessage(string routingKey, object message)
+		public void OnMessage(string routingKey, string json)
 		{
 			if (_routingKey.IsMatch(routingKey.Split('.')) == false)
 				return;
 
-			_onReceive(message);
+			_onReceive(json);
 		}
 
 		public static Segment CreateExpressionTree(string routingPattern)

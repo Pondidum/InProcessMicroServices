@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Core.Messaging.Memory
 {
@@ -15,9 +16,12 @@ namespace Core.Messaging.Memory
 			);
 		}
 
-		public IDisposable SubscribeTo(string exchangeName, string bindingKey, Action<object> onReceive)
+		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive)
 		{
-			var listener = new MemoryListener(_exchanges[exchangeName], bindingKey, onReceive );
+			var listener = new MemoryListener(
+				_exchanges[exchangeName],
+				bindingKey,
+				json => onReceive(JsonConvert.DeserializeObject<T>(json)));
 
 			_exchanges[exchangeName].Add(listener);
 

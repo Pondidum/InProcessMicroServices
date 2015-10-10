@@ -4,6 +4,7 @@ namespace Core.Messaging
 {
 	public interface IQueueConnector
 	{
-		IDisposable SubscribeTo(string exchangeName, string bindingKey, Action<object> onReceive);
+		IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive);
+		IMessagePublisher CreatePublisher(string exchangeName);
 	}
 }

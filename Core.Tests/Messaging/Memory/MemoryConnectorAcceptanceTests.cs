@@ -33,7 +33,7 @@ namespace Core.Tests.Memory
 		public void When_publishing_and_there_is_one_matching_subscriber()
 		{
 			Message received = null;
-			_connector.SubscribeTo(ExchangeName, "people.create", m => received = (Message)m);
+			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => received = m);
 
 			_connector
 				.CreatePublisher(ExchangeName)
@@ -50,8 +50,8 @@ namespace Core.Tests.Memory
 			Message first = null;
 			Message second = null;
 
-			_connector.SubscribeTo(ExchangeName, "people.create", m => first = (Message)m);
-			_connector.SubscribeTo(ExchangeName, "people.create", m => second = (Message)m);
+			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => first = (Message)m);
+			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => second = (Message)m);
 
 			_connector
 				.CreatePublisher(ExchangeName)
@@ -72,7 +72,7 @@ namespace Core.Tests.Memory
 		public void When_publishing_and_there_is_one_non_matching_subscriber()
 		{
 			Message received = null;
-			_connector.SubscribeTo(ExchangeName, "people.create", m => received = (Message)m);
+			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => received = (Message)m);
 
 			_connector
 				.CreatePublisher(ExchangeName)
@@ -87,8 +87,8 @@ namespace Core.Tests.Memory
 			Message first = null;
 			Message second = null;
 
-			_connector.SubscribeTo(ExchangeName, "people.create", m => first = (Message)m);
-			_connector.SubscribeTo(ExchangeName, "people.create", m => second = (Message)m);
+			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => first = (Message)m);
+			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => second = (Message)m);
 
 			_connector
 				.CreatePublisher(ExchangeName)

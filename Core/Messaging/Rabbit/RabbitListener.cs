@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Text;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace Core.Messaging.Rabbit
 {
-	public class RabbitListener : IDisposable
+	public class RabbitListener<TMessage> : IDisposable
 	{
 		private readonly IConnection _connection;
 		private readonly IModel _channel;
 		private readonly string _exchangeName;
 		private readonly string _routingKey;
-		private readonly Action<object> _onMessage;
+		private readonly Action<TMessage> _onMessage;
 
 		private readonly EventingBasicConsumer _consumer;
 		private readonly QueueDeclareOk _queueName;
 
-		public RabbitListener(IConnection connection, string exchangeName, string routingKey, Action<object> onMessage)
+		public RabbitListener(IConnection connection, string exchangeName, string routingKey, Action<TMessage> onMessage)
 		{
 			_connection = connection;
 			_channel = connection.CreateModel();
@@ -34,7 +36,10 @@ namespace Core.Messaging.Rabbit
 
 		private void OnReceived(object sender, BasicDeliverEventArgs e)
 		{
-			_onMessage(e.Body);
+			var json = Encoding.UTF8.GetString(e.Body);
+			var instance = JsonConvert.DeserializeObject<TMessage>(json);
+
+			_onMessage(instance);
 		}
 
 		public void Dispose()

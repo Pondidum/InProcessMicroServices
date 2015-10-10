@@ -12,12 +12,16 @@ namespace Core.Messaging.Rabbit
 			_factory = new ConnectionFactory();
 		}
 
-		public IDisposable SubscribeTo(string exchangeName, string bindingKey, Action<object> onReceive)
+		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive)
 		{
 			var connection = _factory.CreateConnection();
 
-			return new RabbitListener(connection, exchangeName, bindingKey, onReceive);
+			return new RabbitListener<T>(connection, exchangeName, bindingKey, onReceive);
 		}
 
+		public IMessagePublisher CreatePublisher(string exchangeName)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

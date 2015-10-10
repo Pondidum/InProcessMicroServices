@@ -18,9 +18,7 @@ namespace Core.Messaging.Memory
 
 			foreach (var listener in _listeners)
 			{
-				var instance = JsonConvert.DeserializeObject(json, message.GetType());
-
-				listener.OnMessage(routingKey, instance);
+				listener.OnMessage(routingKey, json);
 			}
 		}
 	}
