@@ -8,19 +8,19 @@ namespace Core.Memory
 	public class MemoryListener : IDisposable
 	{
 		private readonly HashSet<MemoryListener> _memoryListeners;
-		private readonly string _routingKey;
+		private readonly Segment _routingKey;
 		private readonly Action<object> _onReceive;
 
 		public MemoryListener(HashSet<MemoryListener> memoryListeners, string routingKey, Action<object> onReceive)
 		{
 			_memoryListeners = memoryListeners;
-			_routingKey = routingKey;
+			_routingKey = CreateExpressionTree(routingKey);
 			_onReceive = onReceive;
 		}
 
 		public void OnMessage(string routingKey, object message)
 		{
-			if (string.Equals(routingKey, _routingKey, StringComparison.OrdinalIgnoreCase) == false)
+			if (_routingKey.IsMatch(routingKey.Split('.')) == false)
 				return;
 
 			_onReceive(message);
