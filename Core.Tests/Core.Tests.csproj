@@ -63,6 +63,7 @@
     <Compile Include="Memory\MemoryConnectorAcceptanceTests.cs" />
     <Compile Include="Memory\MemoryListenerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scratchpad.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
