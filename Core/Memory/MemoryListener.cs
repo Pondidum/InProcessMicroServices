@@ -11,10 +11,10 @@ namespace Core.Memory
 		private readonly Segment _routingKey;
 		private readonly Action<object> _onReceive;
 
-		public MemoryListener(HashSet<MemoryListener> memoryListeners, string routingKey, Action<object> onReceive)
+		public MemoryListener(HashSet<MemoryListener> memoryListeners, string bindingKey, Action<object> onReceive)
 		{
 			_memoryListeners = memoryListeners;
-			_routingKey = CreateExpressionTree(routingKey);
+			_routingKey = CreateExpressionTree(bindingKey);
 			_onReceive = onReceive;
 		}
 

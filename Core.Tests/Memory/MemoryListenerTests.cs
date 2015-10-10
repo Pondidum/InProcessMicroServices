@@ -8,6 +8,8 @@ namespace Core.Tests.Memory
 	public class MemoryListenerTests
 	{
 		[Theory]
+		[InlineData("", "", true)]
+		[InlineData("", "testing", false)]
 		[InlineData("Some.Matching.Pattern", "Some.Matching.Pattern", true)]
 		[InlineData("Some.Matching.Pattern", "Some.NonMatching.Key", false)]
 		[InlineData("Some.*.Pattern", "Some.Matching.Pattern", true)]
