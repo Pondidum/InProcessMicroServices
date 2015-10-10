@@ -15,13 +15,18 @@ namespace Core.Memory
 			);
 		}
 
-		public IDisposable SubscribeTo(string exchangeName, string routingKey, Action<object> onReceive)
+		public IDisposable SubscribeTo(string exchangeName, string bindingKey, Action<object> onReceive)
 		{
-			var listener = new MemoryListener(_exchanges[exchangeName], routingKey, onReceive );
+			var listener = new MemoryListener(_exchanges[exchangeName], bindingKey, onReceive );
 
 			_exchanges[exchangeName].Add(listener);
 
 			return listener;
+		}
+
+		public IMessagePublisher CreatePublisher(string exchangeName)
+		{
+			return new MemoryPublisher(_exchanges[exchangeName]);
 		}
 	}
 }

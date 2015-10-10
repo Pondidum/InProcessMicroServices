@@ -12,11 +12,11 @@ namespace Core.Rabbit
 			_factory = new ConnectionFactory();
 		}
 
-		public IDisposable SubscribeTo(string exchangeName, string routingKey, Action<object> onReceive)
+		public IDisposable SubscribeTo(string exchangeName, string bindingKey, Action<object> onReceive)
 		{
 			var connection = _factory.CreateConnection();
 
-			return new RabbitListener(connection, exchangeName, routingKey, onReceive);
+			return new RabbitListener(connection, exchangeName, bindingKey, onReceive);
 		}
 
 	}

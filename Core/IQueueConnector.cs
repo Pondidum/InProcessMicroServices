@@ -4,6 +4,6 @@ namespace Core
 {
 	public interface IQueueConnector
 	{
-		IDisposable SubscribeTo(string exchangeName, string routingKey, Action<object> onReceive);
+		IDisposable SubscribeTo(string exchangeName, string bindingKey, Action<object> onReceive);
 	}
 }

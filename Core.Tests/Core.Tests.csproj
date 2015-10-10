@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Memory\MemoryConnectorAcceptanceTests.cs" />
     <Compile Include="Memory\MemoryListenerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

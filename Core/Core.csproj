@@ -46,8 +46,10 @@
   <ItemGroup>
     <Compile Include="Cache.cs" />
     <Compile Include="IQueueConnector.cs" />
+    <Compile Include="IMessagePublisher.cs" />
     <Compile Include="Memory\MemoryConnector.cs" />
     <Compile Include="Memory\MemoryListener.cs" />
+    <Compile Include="Memory\MemoryPublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rabbit\RabbitConnector.cs" />
     <Compile Include="Rabbit\RabbitListener.cs" />
