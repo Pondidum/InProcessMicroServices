@@ -29,30 +29,35 @@ namespace Core.Messaging.Rabbit
 			}
 		}
 
-		public void Query<TResponse>(string routingKey, object message, Action<TResponse> callback)
+		public void Query<TResponse>(object message, Action<TResponse> callback)
 		{
-			using (var connection = _factory.CreateConnection())
-			using (var channel = connection.CreateModel())
+			var connection = _factory.CreateConnection();
+			var channel = connection.CreateModel();
+
+			var correlationID = Guid.NewGuid().ToString();
+			var replyTo = channel.QueueDeclare().QueueName;
+
+			var listener = new EventingBasicConsumer(channel);
+			channel.BasicConsume(replyTo, true, listener);
+			listener.Received += (s, e) =>
 			{
-				channel.ExchangeDeclare(_exchangeName, ExchangeType.Topic, true, false, null);
-
-				var correlationID = Guid.NewGuid().ToString();
-				var replyTo = channel.QueueDeclare().QueueName;
-
-				var listener = new EventingBasicConsumer(channel);
-				channel.BasicConsume(replyTo, true, listener);
-				listener.Received += (s, e) =>
+				if (e.BasicProperties.CorrelationId == correlationID)
 				{
-					if (e.BasicProperties.CorrelationId == correlationID)
-						callback(MessageFrom<TResponse>(e.Body));
-				};
-				
-				var props = channel.CreateBasicProperties();
-				props.CorrelationId = correlationID;
-				props.ReplyTo = replyTo;
+					callback(MessageFrom<TResponse>(e.Body));
+					channel.Dispose();
+					connection.Dispose();
+				}
+			};
 
-				channel.BasicPublish(_exchangeName, routingKey, props, BodyFrom(message));
-			}
+			var props = channel.CreateBasicProperties();
+			props.CorrelationId = correlationID;
+			props.ReplyTo = replyTo;
+
+			channel.BasicPublish(
+				exchange: "",
+				routingKey: _exchangeName,
+				basicProperties: props,
+				body: BodyFrom(message));
 		}
 
 		private static byte[] BodyFrom(object message)

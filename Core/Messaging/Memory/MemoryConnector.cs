@@ -28,15 +28,15 @@ namespace Core.Messaging.Memory
 			return listener;
 		}
 
-		public IDisposable SubscribeTo<TMessage>(string exchangeName, string bindingKey, Action<ReceiveArgs, TMessage> )
-		{
-			var listener = new MemoryListener(
-				_exchanges[exchangeName],
-				bindingKey,
-				json => { });
+		//public IDisposable SubscribeTo<TMessage>(string exchangeName, string bindingKey, Action<ReceiveArgs, TMessage> )
+		//{
+		//	var listener = new MemoryListener(
+		//		_exchanges[exchangeName],
+		//		bindingKey,
+		//		json => { });
 
-            return new MemoryResponder();
-		}
+  //          return new MemoryResponder();
+		//}
 
 		public IMessagePublisher CreatePublisher(string exchangeName)
 		{

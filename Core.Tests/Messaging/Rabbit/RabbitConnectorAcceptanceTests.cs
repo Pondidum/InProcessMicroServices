@@ -39,9 +39,35 @@ namespace Core.Tests.Messaging.Rabbit
 			}
 		}
 
+		[RequiresRabbitFact]
+		public void When_doing_rpc()
+		{
+			_connector.SubscribeTo<TestMessage>("TestQueue", (c, m) =>
+			{
+				c.CanRespond().ShouldBe(true);
+				c.RespondWith(new TestResponse { Reply = "Yes" });
+			});
+
+			var publisher = (RabbitMessagePublisher)_connector.CreatePublisher("TestQueue");
+			var wait = new AutoResetEvent(false);
+
+			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
+			{
+				m.Reply.ShouldBe("Yes");
+				wait.Set();
+			});
+
+			wait.WaitOne();
+		}
+
 		private class TestMessage
 		{
 			public string Name { get; set; }
+		}
+
+		private class TestResponse
+		{
+			public string Reply { get; set; }
 		}
 	}
 }
