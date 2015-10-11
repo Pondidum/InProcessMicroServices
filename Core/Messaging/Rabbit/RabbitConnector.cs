@@ -20,7 +20,7 @@ namespace Core.Messaging.Rabbit
 			return new RabbitListener<T>(_factory, exchangeName, bindingKey, callback);
 		}
 
-		public IDisposable SubscribeTo<T>(string exchangeName, Action<RabbitResponseArgs, T> callback)
+		public IDisposable SubscribeTo<T>(string exchangeName, Action<IResponseArgs, T> callback)
 		{
 			return new RabbitResponder<T>(_factory, exchangeName, callback);
 		}

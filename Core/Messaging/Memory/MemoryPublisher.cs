@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -20,6 +21,11 @@ namespace Core.Messaging.Memory
 			{
 				listener.OnMessage(routingKey, json);
 			}
+		}
+
+		public void Query<TResponse>(object message, Action<TResponse> callback)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

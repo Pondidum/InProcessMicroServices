@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 
 namespace Core.Messaging.Rabbit
 {
-	public class RabbitResponseArgs
+	public class RabbitResponseArgs : IResponseArgs
 	{
 		private readonly IModel _channel;
 		private readonly IBasicProperties _basicProperties;

@@ -10,11 +10,11 @@ namespace Core.Messaging.Rabbit
 	{
 		private readonly IConnection _connection;
 		private readonly IModel _channel;
-		private readonly Action<RabbitResponseArgs, TMessage> _onMessage;
+		private readonly Action<IResponseArgs, TMessage> _onMessage;
 
 		private readonly EventingBasicConsumer _consumer;
 
-		public RabbitResponder(ConnectionFactory factory, string exchangeName, Action<RabbitResponseArgs, TMessage> onMessage)
+		public RabbitResponder(ConnectionFactory factory, string exchangeName, Action<IResponseArgs, TMessage> onMessage)
 		{
 			_connection = factory.CreateConnection();
 			_channel = _connection.CreateModel();
