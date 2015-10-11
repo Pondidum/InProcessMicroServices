@@ -14,9 +14,7 @@ namespace Core.Messaging.Rabbit
 
 		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive)
 		{
-			var connection = _factory.CreateConnection();
-
-			return new RabbitListener<T>(connection, exchangeName, bindingKey, onReceive);
+			return new RabbitListener<T>(_factory, exchangeName, bindingKey, onReceive);
 		}
 
 		public IMessagePublisher CreatePublisher(string exchangeName)

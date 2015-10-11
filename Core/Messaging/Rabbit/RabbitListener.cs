@@ -17,10 +17,10 @@ namespace Core.Messaging.Rabbit
 		private readonly EventingBasicConsumer _consumer;
 		private readonly QueueDeclareOk _queueName;
 
-		public RabbitListener(IConnection connection, string exchangeName, string routingKey, Action<TMessage> onMessage)
+		public RabbitListener(ConnectionFactory factory, string exchangeName, string routingKey, Action<TMessage> onMessage)
 		{
-			_connection = connection;
-			_channel = connection.CreateModel();
+			_connection = factory.CreateConnection();
+			_channel = _connection.CreateModel();
 			_exchangeName = exchangeName;
 			_routingKey = routingKey;
 			_onMessage = onMessage;
