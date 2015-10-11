@@ -21,7 +21,7 @@ namespace Core.Messaging.Rabbit
 
 		public IMessagePublisher CreatePublisher(string exchangeName)
 		{
-			throw new NotImplementedException();
+			return new RabbitMessagePublisher(_factory, exchangeName);
 		}
 	}
 }
