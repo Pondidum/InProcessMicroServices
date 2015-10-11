@@ -45,7 +45,7 @@ namespace Core.Tests.Messaging.Rabbit
 			_connector.SubscribeTo<TestMessage>("TestQueue", (c, m) =>
 			{
 				c.CanRespond().ShouldBe(true);
-				c.RespondWith(new TestResponse { Reply = "Yes" });
+				c.RespondWith(new TestResponse { Reply = 17 });
 			});
 
 			var publisher = (RabbitMessagePublisher)_connector.CreatePublisher("TestQueue");
@@ -53,11 +53,41 @@ namespace Core.Tests.Messaging.Rabbit
 
 			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
 			{
-				m.Reply.ShouldBe("Yes");
+				m.Reply.ShouldBe(17);
 				wait.Set();
 			});
 
 			wait.WaitOne();
+		}
+
+		[RequiresRabbitFact]
+		public void When_doing_multiple_rpc()
+		{
+			var count = 0;
+			_connector.SubscribeTo<TestMessage>("TestQueue", (c, m) =>
+			{
+				c.CanRespond().ShouldBe(true);
+				c.RespondWith(new TestResponse { Reply = count++ });
+			});
+
+			var publisher = (RabbitMessagePublisher)_connector.CreatePublisher("TestQueue");
+			var wait1 = new AutoResetEvent(false);
+			var wait2 = new AutoResetEvent(false);
+
+			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
+			{
+				m.Reply.ShouldBe(0);
+				wait1.Set();
+			});
+
+			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
+			{
+				m.Reply.ShouldBe(1);
+				wait2.Set();
+			});
+
+			wait1.WaitOne();
+			wait2.WaitOne();
 		}
 
 		private class TestMessage
@@ -67,7 +97,7 @@ namespace Core.Tests.Messaging.Rabbit
 
 		private class TestResponse
 		{
-			public string Reply { get; set; }
+			public int Reply { get; set; }
 		}
 	}
 }

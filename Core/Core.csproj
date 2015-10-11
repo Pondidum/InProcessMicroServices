@@ -57,6 +57,7 @@
     <Compile Include="Messaging\Memory\MemoryPublisher.cs" />
     <Compile Include="Messaging\Rabbit\RabbitMessagePublisher.cs" />
     <Compile Include="Messaging\Rabbit\RabbitResponder.cs" />
+    <Compile Include="Messaging\Rabbit\RabbitResponseArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Messaging\Rabbit\RabbitConnector.cs" />
     <Compile Include="Messaging\Rabbit\RabbitListener.cs" />

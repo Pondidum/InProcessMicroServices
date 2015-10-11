@@ -41,9 +41,15 @@ namespace Core.Messaging.Rabbit
 			channel.BasicConsume(replyTo, true, listener);
 			listener.Received += (s, e) =>
 			{
-				if (e.BasicProperties.CorrelationId == correlationID)
+				if (e.BasicProperties.CorrelationId != correlationID)
+					return;
+
+				try
 				{
 					callback(MessageFrom<TResponse>(e.Body));
+				}
+				finally
+				{
 					channel.Dispose();
 					connection.Dispose();
 				}
