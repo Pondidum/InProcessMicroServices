@@ -25,6 +25,8 @@ namespace Core.Messaging.Rabbit
 			_routingKey = routingKey;
 			_onMessage = onMessage;
 
+			_channel.ExchangeDeclare(exchangeName, ExchangeType.Topic, true ,false, null);
+
 			_consumer = new EventingBasicConsumer(_channel);
 			_consumer.Received += OnReceived;
 

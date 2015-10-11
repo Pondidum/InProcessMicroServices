@@ -23,6 +23,8 @@ namespace Core.Messaging.Rabbit
 			using(var connection = _factory.CreateConnection())
 			using (var channel = connection.CreateModel())
 			{
+				channel.ExchangeDeclare(_exchangeName, ExchangeType.Topic, true, false, null);
+
 				var basicProperties = channel.CreateBasicProperties();
 				channel.BasicPublish(_exchangeName, routingKey, basicProperties, body);
 			}

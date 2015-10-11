@@ -7,9 +7,12 @@ namespace Core.Messaging.Rabbit
 	{
 		private readonly ConnectionFactory _factory;
 
-		public RabbitConnector()
+		public RabbitConnector(string host)
 		{
-			_factory = new ConnectionFactory();
+			_factory = new ConnectionFactory
+			{
+				HostName = host
+			};
 		}
 
 		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive)
