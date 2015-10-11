@@ -15,9 +15,14 @@ namespace Core.Messaging.Rabbit
 			};
 		}
 
-		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive)
+		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> callback)
 		{
-			return new RabbitListener<T>(_factory, exchangeName, bindingKey, onReceive);
+			return new RabbitListener<T>(_factory, exchangeName, bindingKey, callback);
+		}
+
+		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<object, T> callback)
+		{
+			return new RabbitResponder<T>(_factory, exchangeName, bindingKey, callback);
 		}
 
 		public IMessagePublisher CreatePublisher(string exchangeName)

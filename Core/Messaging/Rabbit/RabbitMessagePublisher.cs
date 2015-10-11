@@ -1,6 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace Core.Messaging.Rabbit
 {
@@ -17,17 +19,52 @@ namespace Core.Messaging.Rabbit
 
 		public void Publish(string routingKey, object message)
 		{
-			var json = JsonConvert.SerializeObject(message);
-			var body = Encoding.UTF8.GetBytes(json);
-
-			using(var connection = _factory.CreateConnection())
+			using (var connection = _factory.CreateConnection())
 			using (var channel = connection.CreateModel())
 			{
 				channel.ExchangeDeclare(_exchangeName, ExchangeType.Topic, true, false, null);
 
 				var basicProperties = channel.CreateBasicProperties();
-				channel.BasicPublish(_exchangeName, routingKey, basicProperties, body);
+				channel.BasicPublish(_exchangeName, routingKey, basicProperties, BodyFrom(message));
 			}
+		}
+
+		public void Query<TResponse>(string routingKey, object message, Action<TResponse> callback)
+		{
+			using (var connection = _factory.CreateConnection())
+			using (var channel = connection.CreateModel())
+			{
+				channel.ExchangeDeclare(_exchangeName, ExchangeType.Topic, true, false, null);
+
+				var correlationID = Guid.NewGuid().ToString();
+				var replyTo = channel.QueueDeclare().QueueName;
+
+				var listener = new EventingBasicConsumer(channel);
+				channel.BasicConsume(replyTo, true, listener);
+				listener.Received += (s, e) =>
+				{
+					if (e.BasicProperties.CorrelationId == correlationID)
+						callback(MessageFrom<TResponse>(e.Body));
+				};
+				
+				var props = channel.CreateBasicProperties();
+				props.CorrelationId = correlationID;
+				props.ReplyTo = replyTo;
+
+				channel.BasicPublish(_exchangeName, routingKey, props, BodyFrom(message));
+			}
+		}
+
+		private static byte[] BodyFrom(object message)
+		{
+			var json = JsonConvert.SerializeObject(message);
+			return Encoding.UTF8.GetBytes(json);
+		}
+
+		private static T MessageFrom<T>(byte[] body)
+		{
+			var json = Encoding.UTF8.GetString(body);
+			return JsonConvert.DeserializeObject<T>(json);
 		}
 	}
 }

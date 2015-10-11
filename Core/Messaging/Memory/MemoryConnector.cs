@@ -28,9 +28,36 @@ namespace Core.Messaging.Memory
 			return listener;
 		}
 
+		public IDisposable SubscribeTo<TMessage>(string exchangeName, string bindingKey, Action<ReceiveArgs, TMessage> )
+		{
+			var listener = new MemoryListener(
+				_exchanges[exchangeName],
+				bindingKey,
+				json => { });
+
+            return new MemoryResponder();
+		}
+
 		public IMessagePublisher CreatePublisher(string exchangeName)
 		{
 			return new MemoryPublisher(_exchanges[exchangeName]);
+		}
+	}
+
+	public class ReceiveArgs
+	{
+		public bool CanRespond { get; set; }
+
+		public void RespondWith(object message)
+		{
+			
+		}
+	}
+
+	public class MemoryResponder : IDisposable
+	{
+		public void Dispose()
+		{
 		}
 	}
 }
