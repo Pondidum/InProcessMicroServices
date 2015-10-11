@@ -15,19 +15,19 @@ namespace Core.Messaging.Rabbit
 			};
 		}
 
-		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> callback)
+		public IDisposable SubscribeTo<T>(string queueName, string bindingKey, Action<T> callback)
 		{
-			return new RabbitListener<T>(_factory, exchangeName, bindingKey, callback);
+			return new RabbitListener<T>(_factory, queueName, bindingKey, callback);
 		}
 
-		public IDisposable SubscribeTo<T>(string exchangeName, Action<IResponseArgs, T> callback)
+		public IDisposable SubscribeTo<T>(string queueName, Action<IResponseArgs, T> callback)
 		{
-			return new RabbitResponder<T>(_factory, exchangeName, callback);
+			return new RabbitResponder<T>(_factory, queueName, callback);
 		}
 
-		public IMessagePublisher CreatePublisher(string exchangeName)
+		public IMessagePublisher CreatePublisher(string queueName)
 		{
-			return new RabbitMessagePublisher(_factory, exchangeName);
+			return new RabbitMessagePublisher(_factory, queueName);
 		}
 	}
 }

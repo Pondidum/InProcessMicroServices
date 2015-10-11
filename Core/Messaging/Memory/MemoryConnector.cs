@@ -6,53 +6,36 @@ namespace Core.Messaging.Memory
 {
 	public class MemoryConnector : IQueueConnector
 	{
-		private readonly Cache<string, HashSet<MemoryListener>> _exchanges;
+		private readonly Cache<string, HashSet<MemoryListener>> _queues;
 
 		public MemoryConnector()
 		{
-			_exchanges = new Cache<string, HashSet<MemoryListener>>(
+			_queues = new Cache<string, HashSet<MemoryListener>>(
 				new Dictionary<string, HashSet<MemoryListener>>(StringComparer.OrdinalIgnoreCase),
 				key => new HashSet<MemoryListener>()
 			);
 		}
 
-		public IDisposable SubscribeTo<T>(string exchangeName, string bindingKey, Action<T> onReceive)
+		public IDisposable SubscribeTo<T>(string queueName, string bindingKey, Action<T> onReceive)
 		{
 			var listener = new MemoryListener(
-				_exchanges[exchangeName],
+				_queues[queueName],
 				bindingKey,
 				json => onReceive(JsonConvert.DeserializeObject<T>(json)));
 
-			_exchanges[exchangeName].Add(listener);
+			_queues[queueName].Add(listener);
 
 			return listener;
 		}
 
-		public IDisposable SubscribeTo<T>(string exchangeName, Action<IResponseArgs, T> callback)
+		public IDisposable SubscribeTo<T>(string queueName, Action<IResponseArgs, T> callback)
 		{
 			throw new NotImplementedException();
 		}
 
-		public IMessagePublisher CreatePublisher(string exchangeName)
+		public IMessagePublisher CreatePublisher(string queueName)
 		{
-			return new MemoryPublisher(_exchanges[exchangeName]);
-		}
-	}
-
-	public class ReceiveArgs
-	{
-		public bool CanRespond { get; set; }
-
-		public void RespondWith(object message)
-		{
-			
-		}
-	}
-
-	public class MemoryResponder : IDisposable
-	{
-		public void Dispose()
-		{
+			return new MemoryPublisher(_queues[queueName]);
 		}
 	}
 }
