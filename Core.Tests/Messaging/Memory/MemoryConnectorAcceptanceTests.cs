@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading;
 using Core.Messaging.Memory;
 using Shouldly;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Core.Tests.Memory
 {
@@ -98,10 +100,41 @@ namespace Core.Tests.Memory
 			second.ShouldBe(null);
 		}
 
+		[Fact]
+		public void When_doing_rpc()
+		{
+			_connector.SubscribeTo<Message>("TestQueue", (c, m) =>
+			{
+				c.CanRespond().ShouldBe(true);
+				c.RespondWith(new TestResponse { Reply = 17 });
+			});
+
+			var publisher = (MemoryPublisher)_connector.CreatePublisher("TestQueue");
+			//var wait = new AutoResetEvent(false);
+
+			publisher.Query<TestResponse>(new Message { Name = "Andy Dote"}, m =>
+			{
+				m.Reply.ShouldBe(17);
+			});
+
+			//publisher.Query<TestResponse>(new Message { Name = "Andy Dote" }, m =>
+			//{
+			//	m.Reply.ShouldBe(17);
+			//	wait.Set();
+			//});
+
+			//wait.WaitOne();
+		}
+
 		private class Message
 		{
 			public Guid ID { get; set; }
 			public string Name { get; set; }
+		}
+
+		private class TestResponse
+		{
+			public int Reply { get; set; }
 		}
 	}
 }

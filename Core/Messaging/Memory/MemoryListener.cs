@@ -1,19 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Core.Messaging.Memory
 {
-	public class MemoryListener : IDisposable
+	public class MemoryListener
 	{
-		private readonly HashSet<MemoryListener> _memoryListeners;
 		private readonly Segment _routingKey;
 		private readonly Action<string> _onReceive;
 
-		public MemoryListener(HashSet<MemoryListener> memoryListeners, string bindingKey, Action<string> onReceive)
+		public MemoryListener(string bindingKey, Action<string> onReceive)
 		{
-			_memoryListeners = memoryListeners;
 			_routingKey = CreateExpressionTree(bindingKey);
 			_onReceive = onReceive;
 		}
@@ -72,13 +69,6 @@ namespace Core.Messaging.Memory
 
 				return false;
 			}
-		}
-
-
-
-		public void Dispose()
-		{
-			_memoryListeners.Remove(this);
 		}
 	}
 }
