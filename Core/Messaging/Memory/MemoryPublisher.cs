@@ -16,10 +16,11 @@ namespace Core.Messaging.Memory
 		public void Publish(string routingKey, object message)
 		{
 			var json = JsonConvert.SerializeObject(message);
+			var props = new MemoryProps { RoutingKey = routingKey};
 
 			foreach (var listener in _listeners)
 			{
-				listener.OnMessage(routingKey, json);
+				listener.OnMessage(props, json);
 			}
 		}
 

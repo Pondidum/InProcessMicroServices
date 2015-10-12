@@ -18,8 +18,10 @@ namespace Core.Messaging.Memory
 			_onReceive = onReceive;
 		}
 
-		public void OnMessage(string routingKey, string json)
+		public void OnMessage(MemoryProps props, string json)
 		{
+			var routingKey = props.RoutingKey;
+
 			if (_routingKey.IsMatch(routingKey.Split('.')) == false)
 				return;
 
