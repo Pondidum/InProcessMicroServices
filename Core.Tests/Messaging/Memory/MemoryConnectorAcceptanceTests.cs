@@ -9,7 +9,7 @@ namespace Core.Tests.Memory
 {
 	public class MemoryConnectorAcceptanceTests
 	{
-		private const string ExchangeName = "domainMessages";
+		private const string QueueName = "domainMessages";
 		private readonly MemoryConnector _connector;
 		private readonly Message _message;
 
@@ -27,7 +27,7 @@ namespace Core.Tests.Memory
 		public void When_publishing_and_there_are_no_subscribers()
 		{
 			_connector
-				.CreatePublisher(ExchangeName)
+				.CreatePublisher(QueueName)
 				.Publish("people.create", _message);
 		}
 
@@ -35,10 +35,10 @@ namespace Core.Tests.Memory
 		public void When_publishing_and_there_is_one_matching_subscriber()
 		{
 			Message received = null;
-			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => received = m);
+			_connector.SubscribeTo<Message>(QueueName, "people.create", m => received = m);
 
 			_connector
-				.CreatePublisher(ExchangeName)
+				.CreatePublisher(QueueName)
 				.Publish("people.create", _message);
 
 			received.ShouldNotBeSameAs(_message);
@@ -52,11 +52,11 @@ namespace Core.Tests.Memory
 			Message first = null;
 			Message second = null;
 
-			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => first = (Message)m);
-			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => second = (Message)m);
+			_connector.SubscribeTo<Message>(QueueName, "people.create", m => first = (Message)m);
+			_connector.SubscribeTo<Message>(QueueName, "people.create", m => second = (Message)m);
 
 			_connector
-				.CreatePublisher(ExchangeName)
+				.CreatePublisher(QueueName)
 				.Publish("people.create", _message);
 
 			first.ShouldNotBeSameAs(_message);
@@ -74,10 +74,10 @@ namespace Core.Tests.Memory
 		public void When_publishing_and_there_is_one_non_matching_subscriber()
 		{
 			Message received = null;
-			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => received = (Message)m);
+			_connector.SubscribeTo<Message>(QueueName, "people.create", m => received = (Message)m);
 
 			_connector
-				.CreatePublisher(ExchangeName)
+				.CreatePublisher(QueueName)
 				.Publish("people.edit", _message);
 
 			received.ShouldBe(null);
@@ -89,11 +89,11 @@ namespace Core.Tests.Memory
 			Message first = null;
 			Message second = null;
 
-			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => first = (Message)m);
-			_connector.SubscribeTo<Message>(ExchangeName, "people.create", m => second = (Message)m);
+			_connector.SubscribeTo<Message>(QueueName, "people.create", m => first = (Message)m);
+			_connector.SubscribeTo<Message>(QueueName, "people.create", m => second = (Message)m);
 
 			_connector
-				.CreatePublisher(ExchangeName)
+				.CreatePublisher(QueueName)
 				.Publish("people.edit", _message);
 
 			first.ShouldBe(null);

@@ -14,13 +14,13 @@ namespace Core.Messaging.Rabbit
 
 		private readonly EventingBasicConsumer _consumer;
 
-		public RabbitResponder(ConnectionFactory factory, string exchangeName, Action<IResponseArgs, TMessage> onMessage)
+		public RabbitResponder(ConnectionFactory factory, string queueName, Action<IResponseArgs, TMessage> onMessage)
 		{
 			_connection = factory.CreateConnection();
 			_channel = _connection.CreateModel();
 			_onMessage = onMessage;
 
-			_channel.QueueDeclare(queue: exchangeName,
+			_channel.QueueDeclare(queue: queueName,
 								 durable: false,
 								 exclusive: false,
 								 autoDelete: false,
@@ -31,7 +31,7 @@ namespace Core.Messaging.Rabbit
 			_consumer = new EventingBasicConsumer(_channel);
 			_consumer.Received += OnReceived;
 
-			_channel.BasicConsume(exchangeName, false, _consumer);
+			_channel.BasicConsume(queueName, false, _consumer);
 		}
 
 		private void OnReceived(object sender, BasicDeliverEventArgs e)
