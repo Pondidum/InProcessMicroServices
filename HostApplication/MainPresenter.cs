@@ -7,14 +7,14 @@ namespace HostApplication
 	{
 		private readonly IMainView _view;
 		private readonly IDisposable _listener;
-		private readonly IMessagePublisher _publisher;
+		private IQueueConnector _connector;
 
 		public MainPresenter(IMainView view, IQueueConnector connector)
 		{
 			_view = view;
 
 			_listener = connector.SubscribeTo<ScannerPulse>("Notifications", "Scanner.Pulse", OnScannerPulse);
-			_publisher = connector.CreatePublisher("Notifications");
+			_connector = connector;
 			
 			_view.StartClicked += OnStartClicked;
 			_view.StopClicked += OnStopClicked;
@@ -27,7 +27,7 @@ namespace HostApplication
 
 		private void OnStartClicked()
 		{
-			_publisher.Publish("Scanner.Start", new ScannerControl
+			_connector.Publish("Notifications", "Scanner.Start", new ScannerControl
 			{
 				Name ="TestScanner",
 				Term = "Omg!"
@@ -36,7 +36,7 @@ namespace HostApplication
 
 		private void OnStopClicked()
 		{
-			_publisher.Publish("Scanner.Stop", new ScannerControl
+			_connector.Publish("Notifications", "Scanner.Stop", new ScannerControl
 			{
 				Name = "TestScanner",
 				Term = "Omg!"

@@ -27,8 +27,7 @@ namespace Core.Tests.Memory
 		public void When_publishing_and_there_are_no_subscribers()
 		{
 			_connector
-				.CreatePublisher(QueueName)
-				.Publish("people.create", _message);
+				.Publish(QueueName, "people.create", _message);
 		}
 
 		[Fact]
@@ -38,8 +37,7 @@ namespace Core.Tests.Memory
 			_connector.SubscribeTo<Message>(QueueName, "people.create", m => received = m);
 
 			_connector
-				.CreatePublisher(QueueName)
-				.Publish("people.create", _message);
+				.Publish(QueueName, "people.create", _message);
 
 			received.ShouldNotBeSameAs(_message);
 			received.ID.ShouldBe(_message.ID);
@@ -56,8 +54,7 @@ namespace Core.Tests.Memory
 			_connector.SubscribeTo<Message>(QueueName, "people.create", m => second = (Message)m);
 
 			_connector
-				.CreatePublisher(QueueName)
-				.Publish("people.create", _message);
+				.Publish(QueueName, "people.create", _message);
 
 			first.ShouldNotBeSameAs(_message);
 			first.ID.ShouldBe(_message.ID);
@@ -77,8 +74,7 @@ namespace Core.Tests.Memory
 			_connector.SubscribeTo<Message>(QueueName, "people.create", m => received = (Message)m);
 
 			_connector
-				.CreatePublisher(QueueName)
-				.Publish("people.edit", _message);
+				.Publish(QueueName, "people.edit", _message);
 
 			received.ShouldBe(null);
 		}
@@ -93,8 +89,7 @@ namespace Core.Tests.Memory
 			_connector.SubscribeTo<Message>(QueueName, "people.create", m => second = (Message)m);
 
 			_connector
-				.CreatePublisher(QueueName)
-				.Publish("people.edit", _message);
+				.Publish(QueueName, "people.edit", _message);
 
 			first.ShouldBe(null);
 			second.ShouldBe(null);
@@ -109,21 +104,10 @@ namespace Core.Tests.Memory
 				c.RespondWith(new TestResponse { Reply = 17 });
 			});
 
-			var publisher = (MemoryPublisher)_connector.CreatePublisher("TestQueue");
-			//var wait = new AutoResetEvent(false);
-
-			publisher.Query<TestResponse>(new Message { Name = "Andy Dote"}, m =>
+			_connector.Query<TestResponse>("TestQueue", new Message { Name = "Andy Dote"}, m =>
 			{
 				m.Reply.ShouldBe(17);
 			});
-
-			//publisher.Query<TestResponse>(new Message { Name = "Andy Dote" }, m =>
-			//{
-			//	m.Reply.ShouldBe(17);
-			//	wait.Set();
-			//});
-
-			//wait.WaitOne();
 		}
 
 		private class Message

@@ -6,16 +6,17 @@ namespace Core.Messaging.Memory
 {
 	public class MemoryResponder<TMessage> : IDisposable
 	{
-		private readonly Cache<string, HashSet<Action<MemoryProps, string>>> _queues;
+		private readonly MemoryConnector _connector;
 		private readonly string _queueName;
 		private readonly Action<IResponseArgs, TMessage> _callback;
 
-		public MemoryResponder(Cache<string, HashSet<Action<MemoryProps, string>>> queues, string queueName, Action<IResponseArgs, TMessage> callback)
+		public MemoryResponder(MemoryConnector connector, string queueName, Action<IResponseArgs, TMessage> callback)
 		{
-			_queues = queues;
+			_connector = connector;
 			_queueName = queueName;
 			_callback = callback;
-			queues[queueName].Add(OnMessage);
+
+			_connector.Add(queueName, OnMessage);
 		}
 
 		private void OnMessage(MemoryProps props, string json)
@@ -23,14 +24,14 @@ namespace Core.Messaging.Memory
 			var instance = JsonConvert.DeserializeObject<TMessage>(json);
 
 			_callback(
-				new MemoryResponseArgs(_queues, props),
+				new MemoryResponseArgs(_connector, props),
 				instance
 				);
 		}
 
 		public void Dispose()
 		{
-			_queues[_queueName].Remove(OnMessage);
+			_connector.Remove(_queueName, OnMessage);
 		}
 	}
 }

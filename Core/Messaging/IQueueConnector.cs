@@ -7,6 +7,7 @@ namespace Core.Messaging
 		IDisposable SubscribeTo<T>(string queueName, string bindingKey, Action<T> onReceive);
 		IDisposable SubscribeTo<T>(string queueName, Action<IResponseArgs, T> callback);
 
-		IMessagePublisher CreatePublisher(string queueName);
+		void Publish(string queueName, string routingKey, object message);
+		void Query<TResponse>(string queueName, object message, Action<TResponse> callback);
 	}
 }

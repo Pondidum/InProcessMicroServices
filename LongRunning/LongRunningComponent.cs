@@ -10,10 +10,10 @@ namespace LongRunning
 {
 	public class LongRunningComponent : IPluginComponent, IDisposable
 	{
-		private IMessagePublisher _publisher;
 		private readonly HashSet<IDisposable> _listeners;
 		private readonly List<KeyValuePair<string, CancellationTokenSource>> _scanners;
 		private readonly Random _random;
+		private IQueueConnector _connector;
 
 		public LongRunningComponent()
 		{
@@ -28,7 +28,7 @@ namespace LongRunning
 			var sleep = _random.Next(500, 5000);
 			while (source.IsCancellationRequested == false)
 			{
-				_publisher.Publish("Scanner.Pulse", new { Name = key, Count = i });
+				_connector.Publish("Notifications", "Scanner.Pulse", new { Name = key, Count = i });
 				i++;
 
 				Thread.Sleep(sleep);
@@ -41,7 +41,7 @@ namespace LongRunning
 			_listeners.Add(connector.SubscribeTo<ScannerControl>("Notifications", "Scanner.Start", OnStartScanner));
 			_listeners.Add(connector.SubscribeTo<ScannerControl>("Notifications", "Scanner.Stop", OnStopScanner));
 
-			_publisher = connector.CreatePublisher("Notifications");
+			_connector = connector;
 		}
 
 		private void OnStartScanner(ScannerControl message)

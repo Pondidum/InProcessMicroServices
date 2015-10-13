@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
-
 namespace Core.Messaging.Memory
 {
 	public class MemoryResponseArgs : IResponseArgs
 	{
-		private readonly Cache<string, HashSet<Action<MemoryProps, string>>> _queues;
+		private readonly MemoryConnector _connector;
 		private readonly MemoryProps _props;
 
-		public MemoryResponseArgs(Cache<string, HashSet<Action<MemoryProps, string>>> queues, MemoryProps props)
+		public MemoryResponseArgs(MemoryConnector connector, MemoryProps props)
 		{
-			_queues = queues;
+			_connector = connector;
 			_props = props;
 		}
 
@@ -24,9 +21,9 @@ namespace Core.Messaging.Memory
 			if (CanRespond() == false)
 				return;
 
-			var publisher = new MemoryPublisher(null, _queues[_props.ReplyTo]);
+			var c = new MemoryConnector();
 
-			publisher.Publish(_props.RoutingKey, message);
+			c.Publish(_props.ReplyTo, _props.RoutingKey, message);
 		}
 	}
 }

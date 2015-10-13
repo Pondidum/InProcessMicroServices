@@ -34,8 +34,7 @@ namespace Core.Tests.Messaging.Rabbit
 			using (_connector.SubscribeTo("TestExchange", "#", callback))
 			{
 				_connector
-					.CreatePublisher("TestExchange")
-					.Publish("Person.Create", new TestMessage { Name = "Andy Dote" });
+					.Publish("TestExchange", "Person.Create", new TestMessage { Name = "Andy Dote" });
 
 				wait.WaitOne();
 				message.Name.ShouldBe("Andy Dote");
@@ -51,10 +50,9 @@ namespace Core.Tests.Messaging.Rabbit
 				c.RespondWith(new TestResponse { Reply = 17 });
 			});
 
-			var publisher = (RabbitMessagePublisher)_connector.CreatePublisher("TestQueue");
 			var wait = new AutoResetEvent(false);
 
-			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
+			_connector.Query<TestResponse>("TestQueue", new TestMessage { Name = "Andy Dote" }, m =>
 			{
 				m.Reply.ShouldBe(17);
 				wait.Set();
@@ -74,18 +72,17 @@ namespace Core.Tests.Messaging.Rabbit
 				c.RespondWith(new TestResponse { Reply = count++ });
 			});
 
-			var publisher = (RabbitMessagePublisher)_connector.CreatePublisher("MutliQueue");
 			var wait1 = new AutoResetEvent(false);
 			var wait2 = new AutoResetEvent(false);
 
-			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
+			_connector.Query<TestResponse>("MutliQueue", new TestMessage { Name = "Andy Dote" }, m =>
 			{
 				_output.WriteLine("Query.0");
 				m.Reply.ShouldBe(0);
 				wait1.Set();
 			});
 
-			publisher.Query<TestResponse>(new TestMessage { Name = "Andy Dote" }, m =>
+			_connector.Query<TestResponse>("MutliQueue", new TestMessage { Name = "Andy Dote" }, m =>
 			{
 				_output.WriteLine("Query.1");
 				m.Reply.ShouldBe(1);
