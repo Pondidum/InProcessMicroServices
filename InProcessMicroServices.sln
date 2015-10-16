@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongRunning", "LongRunning\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostApplication", "HostApplication\HostApplication.csproj", "{3D3D2C6E-9136-47DB-B8A9-8D0C2F85A50E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostIsolated", "HostIsolated\HostIsolated.csproj", "{226F2513-D09B-4958-940D-C64E31BEC767}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3D3D2C6E-9136-47DB-B8A9-8D0C2F85A50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D3D2C6E-9136-47DB-B8A9-8D0C2F85A50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D3D2C6E-9136-47DB-B8A9-8D0C2F85A50E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226F2513-D09B-4958-940D-C64E31BEC767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226F2513-D09B-4958-940D-C64E31BEC767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226F2513-D09B-4958-940D-C64E31BEC767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226F2513-D09B-4958-940D-C64E31BEC767}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

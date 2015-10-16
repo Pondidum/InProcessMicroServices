@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace Core.Messaging.Memory
 {
+	[Serializable]
 	public class MemoryConnector : IQueueConnector
 	{
 		private readonly Cache<string, HashSet<Action<MemoryProps, string>>> _queues;
