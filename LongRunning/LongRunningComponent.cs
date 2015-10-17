@@ -20,14 +20,19 @@ namespace LongRunning
 			_random = new Random();
 			_listeners = new HashSet<IDisposable>();
 			_scanners = new List<KeyValuePair<string, CancellationTokenSource>>();
+
+			Console.WriteLine("LongRunningComponent.ctor");
 		}
 
 		private void RunTask(string key, CancellationTokenSource source)
 		{
+			Console.WriteLine("LongRunningComponent.runTask");
 			var i = 0;
 			var sleep = _random.Next(500, 5000);
 			while (source.IsCancellationRequested == false)
 			{
+
+				Console.WriteLine("LongRunningComponent.publish");
 				_connector.Publish("Notifications", "Scanner.Pulse", new { Name = key, Count = i });
 				i++;
 
@@ -38,6 +43,9 @@ namespace LongRunning
 
 		public void Initialise(IQueueConnector connector)
 		{
+
+			Console.WriteLine("LongRunningComponent.initialise");
+
 			_listeners.Add(connector.SubscribeTo<ScannerControl>("Notifications", "Scanner.Start", OnStartScanner));
 			_listeners.Add(connector.SubscribeTo<ScannerControl>("Notifications", "Scanner.Stop", OnStopScanner));
 
