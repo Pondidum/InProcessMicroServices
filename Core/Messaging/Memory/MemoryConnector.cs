@@ -5,12 +5,12 @@ namespace Core.Messaging.Memory
 {
 	public class MemoryConnector : IQueueConnector
 	{
-		private readonly MemoryBus _bus;
-
 		public MemoryConnector()
 		{
-			_bus = new MemoryBus();
+			Bus = new MemoryBus();
 		}
+
+		public MemoryBus Bus { get; }
 
 		public IDisposable SubscribeTo<T>(string queueName, string bindingKey, Action<T> onReceive)
 		{
@@ -18,9 +18,9 @@ namespace Core.Messaging.Memory
 				bindingKey,
 				json => onReceive(JsonConvert.DeserializeObject<T>(json)));
 
-			_bus.Add(queueName, listener.OnMessage);
+			Bus.Add(queueName, listener.OnMessage);
 
-			return new Remover(() => _bus.Remove(queueName, listener.OnMessage));
+			return new Remover(() => Bus.Remove(queueName, listener.OnMessage));
 		}
 
 		public IDisposable SubscribeTo<T>(string queueName, Action<IResponseArgs, T> callback)
@@ -33,9 +33,9 @@ namespace Core.Messaging.Memory
 				callback(responseProps, instance);
 			};
 
-			_bus.Add(queueName, listener);
+			Bus.Add(queueName, listener);
 
-			return new Remover(() => _bus.Remove(queueName, listener));
+			return new Remover(() => Bus.Remove(queueName, listener));
 		}
 
 		public void Publish(string queueName, string routingKey, object message)
@@ -47,7 +47,7 @@ namespace Core.Messaging.Memory
 				Body = json
 			};
 
-			_bus.Publish(queueName, props);
+			Bus.Publish(queueName, props);
 		}
 
 		public void Query<TResponse>(string queueName, object message, Action<TResponse> callback)
@@ -65,9 +65,9 @@ namespace Core.Messaging.Memory
 				callback(instance);
 			};
 
-			_bus.Add(props.ReplyTo, replyListener);
-			_bus.Publish(queueName, props);
-			_bus.Remove(props.ReplyTo, replyListener);
+			Bus.Add(props.ReplyTo, replyListener);
+			Bus.Publish(queueName, props);
+			Bus.Remove(props.ReplyTo, replyListener);
 		}
 
 		private class Remover : IDisposable
