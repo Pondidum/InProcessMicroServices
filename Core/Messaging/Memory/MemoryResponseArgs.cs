@@ -21,9 +21,7 @@ namespace Core.Messaging.Memory
 			if (CanRespond() == false)
 				return;
 
-			var c = new MemoryConnector();
-
-			c.Publish(_props.ReplyTo, _props.RoutingKey, message);
+			_connector.Publish(_props.ReplyTo, _props.RoutingKey, message);
 		}
 	}
 }
