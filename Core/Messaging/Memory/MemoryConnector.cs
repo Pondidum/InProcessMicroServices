@@ -1,32 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Core.Messaging.Memory
 {
-	[Serializable]
 	public class MemoryConnector : IQueueConnector
 	{
-		private readonly Cache<string, HashSet<Action<MemoryProps>>> _queues;
+		private readonly MemoryBus _bus;
 
 		public MemoryConnector()
 		{
-			_queues = new Cache<string, HashSet<Action<MemoryProps>>>(
-				new Dictionary<string, HashSet<Action<MemoryProps>>>(StringComparer.OrdinalIgnoreCase),
-				key => new HashSet<Action<MemoryProps>>()
-			);
+			_bus = new MemoryBus();
 		}
-
-		internal void Add(string queueName, Action<MemoryProps> action)
-		{
-			_queues[queueName].Add(action);
-		}
-
-		internal void Remove(string queueName, Action<MemoryProps> action)
-		{
-			_queues[queueName].Remove(action);
-		}
-
 
 		public IDisposable SubscribeTo<T>(string queueName, string bindingKey, Action<T> onReceive)
 		{
@@ -34,14 +18,24 @@ namespace Core.Messaging.Memory
 				bindingKey,
 				json => onReceive(JsonConvert.DeserializeObject<T>(json)));
 
-			Add(queueName, listener.OnMessage);
-			
-			return new Remover(() => Remove(queueName, listener.OnMessage));
+			_bus.Add(queueName, listener.OnMessage);
+
+			return new Remover(() => _bus.Remove(queueName, listener.OnMessage));
 		}
 
 		public IDisposable SubscribeTo<T>(string queueName, Action<IResponseArgs, T> callback)
 		{
-			return new MemoryResponder<T>(this, queueName, callback);
+			Action<MemoryProps> listener = props =>
+			{
+				var instance = JsonConvert.DeserializeObject<T>(props.Body);
+				var responseProps = new MemoryResponseArgs(this, props);
+
+				callback(responseProps, instance);
+			};
+
+			_bus.Add(queueName, listener);
+
+			return new Remover(() => _bus.Remove(queueName, listener));
 		}
 
 		public void Publish(string queueName, string routingKey, object message)
@@ -53,10 +47,7 @@ namespace Core.Messaging.Memory
 				Body = json
 			};
 
-			foreach (var listener in _queues[queueName])
-			{
-				listener(props);
-			}
+			_bus.Publish(queueName, props);
 		}
 
 		public void Query<TResponse>(string queueName, object message, Action<TResponse> callback)
@@ -74,14 +65,9 @@ namespace Core.Messaging.Memory
 				callback(instance);
 			};
 
-			_queues[props.ReplyTo].Add(replyListener);
-
-			foreach (var listener in _queues[queueName])
-			{
-				listener(props);
-			}
-
-			_queues[props.ReplyTo].Remove(replyListener);
+			_bus.Add(props.ReplyTo, replyListener);
+			_bus.Publish(queueName, props);
+			_bus.Remove(props.ReplyTo, replyListener);
 		}
 
 		private class Remover : IDisposable

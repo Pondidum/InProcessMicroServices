@@ -51,11 +51,11 @@
     <Compile Include="Cache.cs" />
     <Compile Include="IPluginComponent.cs" />
     <Compile Include="Messaging\IQueueConnector.cs" />
+    <Compile Include="Messaging\Memory\MemoryBus.cs" />
     <Compile Include="Messaging\Memory\MemoryConnector.cs" />
     <Compile Include="Messaging\Memory\MemoryListener.cs" />
     <Compile Include="Messaging\Memory\MemoryProps.cs" />
     <Compile Include="Messaging\IResponseArgs.cs" />
-    <Compile Include="Messaging\Memory\MemoryResponder.cs" />
     <Compile Include="Messaging\Memory\MemoryResponseArgs.cs" />
     <Compile Include="Messaging\Rabbit\RabbitResponder.cs" />
     <Compile Include="Messaging\Rabbit\RabbitResponseArgs.cs" />
