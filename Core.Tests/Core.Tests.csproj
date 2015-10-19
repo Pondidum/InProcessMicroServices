@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Messaging\Memory\MemoryConnectorAcceptanceTests.cs" />
+    <Compile Include="Messaging\Memory\MemoryExchangeTests.cs" />
     <Compile Include="Messaging\Memory\MemoryListenerTests.cs" />
     <Compile Include="Messaging\Rabbit\RabbitConnectorAcceptanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

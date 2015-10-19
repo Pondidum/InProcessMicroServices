@@ -53,6 +53,7 @@
     <Compile Include="Messaging\IQueueConnector.cs" />
     <Compile Include="Messaging\Memory\MemoryBus.cs" />
     <Compile Include="Messaging\Memory\MemoryConnector.cs" />
+    <Compile Include="Messaging\Memory\MemoryExchange.cs" />
     <Compile Include="Messaging\Memory\MemoryListener.cs" />
     <Compile Include="Messaging\Memory\MemoryProps.cs" />
     <Compile Include="Messaging\IResponseArgs.cs" />
