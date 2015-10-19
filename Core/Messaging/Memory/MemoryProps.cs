@@ -4,5 +4,7 @@
 	{
 		public string RoutingKey { get; set; }
 		public string ReplyTo { get; set; }
+
+		public string Body { get; set; }
 	}
 }

@@ -7,22 +7,22 @@ namespace Core.Messaging.Memory
 	[Serializable]
 	public class MemoryConnector : IQueueConnector
 	{
-		private readonly Cache<string, HashSet<Action<MemoryProps, string>>> _queues;
+		private readonly Cache<string, HashSet<Action<MemoryProps>>> _queues;
 
 		public MemoryConnector()
 		{
-			_queues = new Cache<string, HashSet<Action<MemoryProps, string>>>(
-				new Dictionary<string, HashSet<Action<MemoryProps, string>>>(StringComparer.OrdinalIgnoreCase),
-				key => new HashSet<Action<MemoryProps, string>>()
+			_queues = new Cache<string, HashSet<Action<MemoryProps>>>(
+				new Dictionary<string, HashSet<Action<MemoryProps>>>(StringComparer.OrdinalIgnoreCase),
+				key => new HashSet<Action<MemoryProps>>()
 			);
 		}
 
-		internal void Add(string queueName, Action<MemoryProps, string> action)
+		internal void Add(string queueName, Action<MemoryProps> action)
 		{
 			_queues[queueName].Add(action);
 		}
 
-		internal void Remove(string queueName, Action<MemoryProps, string> action)
+		internal void Remove(string queueName, Action<MemoryProps> action)
 		{
 			_queues[queueName].Remove(action);
 		}
@@ -47,22 +47,30 @@ namespace Core.Messaging.Memory
 		public void Publish(string queueName, string routingKey, object message)
 		{
 			var json = JsonConvert.SerializeObject(message);
-			var props = new MemoryProps { RoutingKey = routingKey };
+			var props = new MemoryProps
+			{
+				RoutingKey = routingKey,
+				Body = json
+			};
 
 			foreach (var listener in _queues[queueName])
 			{
-				listener(props, json);
+				listener(props);
 			}
 		}
 
 		public void Query<TResponse>(string queueName, object message, Action<TResponse> callback)
 		{
 			var json = JsonConvert.SerializeObject(message);
-			var props = new MemoryProps { ReplyTo = Guid.NewGuid().ToString() };
-
-			Action<MemoryProps, string> replyListener = (p, j) =>
+			var props = new MemoryProps
 			{
-				var instance = JsonConvert.DeserializeObject<TResponse>(j);
+				ReplyTo = Guid.NewGuid().ToString(),
+				Body = json
+			};
+
+			Action<MemoryProps> replyListener = (p) =>
+			{
+				var instance = JsonConvert.DeserializeObject<TResponse>(p.Body);
 				callback(instance);
 			};
 
@@ -70,11 +78,12 @@ namespace Core.Messaging.Memory
 
 			foreach (var listener in _queues[queueName])
 			{
-				listener(props, json);
+				listener(props);
 			}
 
 			_queues[props.ReplyTo].Remove(replyListener);
 		}
+
 		private class Remover : IDisposable
 		{
 			private readonly Action _onDispose;

@@ -19,9 +19,9 @@ namespace Core.Messaging.Memory
 			_connector.Add(queueName, OnMessage);
 		}
 
-		private void OnMessage(MemoryProps props, string json)
+		private void OnMessage(MemoryProps props)
 		{
-			var instance = JsonConvert.DeserializeObject<TMessage>(json);
+			var instance = JsonConvert.DeserializeObject<TMessage>(props.Body);
 
 			_callback(
 				new MemoryResponseArgs(_connector, props),

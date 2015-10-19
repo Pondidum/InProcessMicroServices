@@ -15,14 +15,14 @@ namespace Core.Messaging.Memory
 			_onReceive = onReceive;
 		}
 
-		public void OnMessage(MemoryProps props, string json)
+		public void OnMessage(MemoryProps props)
 		{
 			var routingKey = props.RoutingKey;
 
 			if (_routingKey.IsMatch(routingKey.Split('.')) == false)
 				return;
 
-			_onReceive(json);
+			_onReceive(props.Body);
 		}
 
 		public static Segment CreateExpressionTree(string routingPattern)
