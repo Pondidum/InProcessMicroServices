@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostIsolated", "HostIsolate
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoPlugin", "EchoPlugin\EchoPlugin.csproj", "{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AF801A58-0B23-4DE0-A0F8-3AF9E24814FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0C08D3FC-1ABD-4018-917F-62065AB9543C} = {AF801A58-0B23-4DE0-A0F8-3AF9E24814FE}
+		{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F} = {AF801A58-0B23-4DE0-A0F8-3AF9E24814FE}
 	EndGlobalSection
 EndGlobal
