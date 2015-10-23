@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostApplication", "HostAppl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostIsolated", "HostIsolated\HostIsolated.csproj", "{226F2513-D09B-4958-940D-C64E31BEC767}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoPlugin", "EchoPlugin\EchoPlugin.csproj", "{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{226F2513-D09B-4958-940D-C64E31BEC767}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{226F2513-D09B-4958-940D-C64E31BEC767}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{226F2513-D09B-4958-940D-C64E31BEC767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637D7C3E-3AAC-4299-8E7D-FDC09F4BEB5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
